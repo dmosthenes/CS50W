@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>{{listing_data.title}}</h2>
+
+    <img src="{{listing_data.imageURL}}">
+
+    <div>
+        {{listing_data.description}}
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{bids}}
+        <button type="submit">Bid</button>
+
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+        {{comments}}
+        <button type="submit">Comment</button>
+
+    </form>
+
+{% endblock %}
