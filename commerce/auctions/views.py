@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.forms import ModelForm
 
@@ -87,14 +87,35 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 def watchlist(request):
-    pass
+
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": request.user.watchlist.all()
+    })
+
+
+def add_to_watchlist(request, listing_id):
+
+    # Add the listing of listing_id to watchlist
+
+    lst = get_object_or_404(Listing, pk=listing_id)
+
+    user = request.user
+
+    user.watchlist.add(lst)
+    
+    return redirect('listing', listing_id)
 
 def create_listing(request):
+
     if request.method == "POST":
 
         # Put form content into database
         form = new_listing(request.POST)
+
+        print(form.is_valid())
+        
         if form.is_valid():
 
             user = request.user
@@ -106,38 +127,65 @@ def create_listing(request):
 
             instance.save()
 
-
-
-
-        id = instance.id
-        print(id)
+            id = instance.id
         
-        return redirect('listing', id)
+            return redirect('listing', id)
 
-    else:
-
-        return render(request, "auctions/create_listing.html", {
+    return render(request, "auctions/create_listing.html", {
             "form": new_listing
         
-        })
+    })
 
-def listing(request, name):
 
-    print(name)
-    
+def listing(request, listing_id):
+
+    lst = get_object_or_404(Listing, pk=listing_id)
+
     if request.method == "POST":
 
-        pass
+        # Bids form
+        if request.POST.get("form_name") == "bids":
 
+            form = new_bid(request.POST)
+            if form.is_valid():
 
-    else:
+                # Check that new bid is higher than previous highest
+                bidder = request.user
 
-        return render(request, "auctions/listing.html", {
+                instance = form.save(commit=False)
+                instance.bidder = bidder
+                instance.time = datetime.now()
+                instance.listing = lst
 
-            # "listing_data": Listing.objects.get(id=listing_id),
-            # "bids": new_bid,
-            # # "bid_data": Bids.objects.get(id=listing_id),
-            # "comments": new_comment,
-            # "comment_data": Comments.objects.get(id=listing_id)
+                instance.save()
 
-        })
+        # Comments form
+        else:
+
+            form = new_comment(request.POST)
+            if form.is_valid():
+
+                instance = form.save(commit=False)
+                instance.commenter = request.user
+                instance.time = datetime.now()
+                instance.listing = lst
+
+                instance.save()
+
+    # Get the current high bid for the listing
+    high_bid = None
+    if Bids.objects.filter(listing=lst).exists():
+        # high_bid = Bids.objects.filter(id=listing_id).latest("time")
+        # high_bid = Bids.objects.filter(listing=lst).latest("time")
+        high_bid = Bids.objects.filter(listing=lst).order_by("amount")
+        high_bid = high_bid[len(high_bid)-1]
+
+    return render(request, "auctions/listing.html", {
+
+        "listing_data": Listing.objects.get(id=listing_id),
+        "bids": new_bid,
+        "high_bid": high_bid,
+        "comments": new_comment,
+        "comment_data": Comments.objects.filter(listing=lst)
+
+    })

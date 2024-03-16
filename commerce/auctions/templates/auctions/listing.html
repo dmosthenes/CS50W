@@ -4,24 +4,62 @@
 
     <h2>{{listing_data.title}}</h2>
 
-    <img src="{{listing_data.imageURL}}">
+    <img src="{{listing_data.imageURL}}" width="300" height="300">
 
     <div>
         {{listing_data.description}}
     </div>
 
-    <form method="post">
+
+
+    {% if high_bid is not None %}
+
+    <div>Current bid: {{high_bid.amount}}</div>
+
+    {% else %}
+
+    <div>No bids yet.</div>
+
+    {% endif %}
+
+
+    {% if user.is_authenticated %}
+
+    <a class="nav-link" href="{% url 'add_to_watchlist' listing_data.id %}">Add to Watchlist</a>
+
+    {% endif %}
+
+
+
+    <form method="post" id="bids">
         {% csrf_token %}
         {{bids}}
-        <button type="submit">Bid</button>
+        <button type="submit" name="form_name" value="bids">Bid</button>
 
     </form>
 
-    <form method="post">
+    <form method="post" id="comments">
         {% csrf_token %}
         {{comments}}
         <button type="submit">Comment</button>
 
     </form>
+
+
+    {% for comment in comment_data %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{comment.commenter}}</h5>
+            <p class="card-text">{{comment.comment}}</p>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="card">No comments.</div>
+
+    {% endfor %}
 
 {% endblock %}
