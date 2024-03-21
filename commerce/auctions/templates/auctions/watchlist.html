@@ -2,14 +2,9 @@
 
 {% block body %}
 
-    <ul>
-    {% for item in watchlist %}
+    {% for listing in watchlist %}
 
-    <li>
-
-        <a href="{% url 'listing' item.id %}">{{item}}</a>
-
-    </li>
+    {% include './custom-card.html' with link=url_listing title=item.title description=item.description imageURL=item.imageURL %}
 
     {% empty %}
 
@@ -19,6 +14,6 @@
 
     {% endfor %}
 
-    </ul>
+
 
 {% endblock %}

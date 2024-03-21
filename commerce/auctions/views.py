@@ -3,27 +3,44 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput, Select, ModelChoiceField
 
-from .models import User, Listing, Bids, Comments
+from .models import User, Listing, Bids, Comments, Category
 
 from datetime import datetime
 
 
 class new_listing(ModelForm):
+
+    category = ModelChoiceField(queryset=Category.objects.all(), empty_label="Select category", widget=Select(attrs={'class': 'form-control'}))
+  
     class Meta:
         model = Listing
-        fields = ['title','description','imageURL','duration']
+        fields = ['title','description','imageURL','duration', 'category', 'starting_price']
+        widgets = {
+            'title': TextInput(attrs={'placeholder': 'Title', 'class': 'form-control'}),
+            'description': TextInput(attrs={'placeholder': 'Description', 'class': 'form-control'}),
+            'imageURL': TextInput(attrs={'placeholder': 'Enter image URL', 'class': 'form-control'}),
+            'duration': TextInput(attrs={'class': 'form-control', 'type': 'number', 'step': '1', 'min': '1', 'max': '7', 'placeholder': 'Enter duration in days'}),
+            'starting_price': TextInput(attrs={'class': 'form-control', 'type': 'number', 'step': '0.01', 'placeholder': 'Starting Price'})
+        }
 
 class new_bid(ModelForm):
     class Meta:
         model = Bids
         fields = ['amount']
+        widgets = {
+            'amount': TextInput(attrs={'placeholder': 'Amount', 'class': 'form-control'}),
+            
+        }
 
 class new_comment(ModelForm):
     class Meta:
         model = Comments
         fields = ['comment']
+        widgets = {
+            'comment': TextInput(attrs={'placeholder': 'Your comment here.', 'class': 'form-control'})
+        }
 
 
 def index(request):
@@ -114,7 +131,7 @@ def create_listing(request):
         # Put form content into database
         form = new_listing(request.POST)
 
-        print(form.is_valid())
+        # print(form.is_valid())
         
         if form.is_valid():
 
@@ -141,6 +158,8 @@ def listing(request, listing_id):
 
     lst = get_object_or_404(Listing, pk=listing_id)
 
+    bid_warning = False
+
     if request.method == "POST":
 
         # Bids form
@@ -149,15 +168,31 @@ def listing(request, listing_id):
             form = new_bid(request.POST)
             if form.is_valid():
 
-                # Check that new bid is higher than previous highest
-                bidder = request.user
+                # Check that new bid is higher than starting price
+                if int(form.cleaned_data["amount"]) >= int(lst.starting_price):
 
-                instance = form.save(commit=False)
-                instance.bidder = bidder
-                instance.time = datetime.now()
-                instance.listing = lst
+                    # Check that new bid is greater than previous or if there are no bids
+                    bids = Bids.objects.filter(listing=lst).order_by("amount")
+                    prev = bids[len(bids) -1] if bids else None
 
-                instance.save()
+                    if not prev or int(form.cleaned_data["amount"]) > int(prev.amount):
+
+                        print("adding bid")
+
+                        bidder = request.user
+
+                        instance = form.save(commit=False)
+                        instance.bidder = bidder
+                        instance.time = datetime.now()
+                        instance.listing = lst
+
+                        instance.save()
+
+                    else:
+                        bid_warning = True
+
+                else:
+                    bid_warning = True
 
         # Comments form
         else:
@@ -186,6 +221,37 @@ def listing(request, listing_id):
         "bids": new_bid,
         "high_bid": high_bid,
         "comments": new_comment,
-        "comment_data": Comments.objects.filter(listing=lst)
+        "comment_data": Comments.objects.filter(listing=lst),
+        "seller" : Listing.objects.get(id=listing_id).seller,
+        "winner" : lst.winner,
+        "bid_warning": bid_warning
 
+    })
+
+def close_listing(request, listing_id, winner=None):
+
+    win_user = get_object_or_404(User, username=winner)
+
+    lst = get_object_or_404(Listing, id=listing_id)
+
+    lst.winner = win_user
+
+    lst.save()
+    
+    return redirect("listing", listing_id)
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": Category.objects.all()
+    })
+
+def category(request, category):
+
+    # Get ID for category
+    id = Category.objects.get(name=category)
+    
+    items = Listing.objects.filter(category=id)
+
+    return render(request, "auctions/category.html", {
+        "items": items
     })

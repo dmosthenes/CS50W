@@ -10,41 +10,110 @@
         {{listing_data.description}}
     </div>
 
+    <br>
 
 
-    {% if high_bid is not None %}
+    {% if high_bid is not None and winner %}
 
-    <div>Current bid: {{high_bid.amount}}</div>
+    <h3>You won with winning bid: ${{high_bid.amount}}</h3>
+
+
+    {% elif high_bid is not None %}
+
+    <h3>Current bid: ${{high_bid.amount}}</h3>
 
     {% else %}
 
-    <div>No bids yet.</div>
+    <h3>Starting price: ${{listing_data.starting_price}}</h3>
 
     {% endif %}
 
 
     {% if user.is_authenticated %}
+        <div class="row">
 
-    <a class="nav-link" href="{% url 'add_to_watchlist' listing_data.id %}">Add to Watchlist</a>
+            <div class="col-auto">
+
+                <a type="button" class="btn btn-primary" href="{% url 'add_to_watchlist' listing_data.id %}">Add to Watchlist</a>
+
+            </div>
+
+            {% if user == seller and winner == None %}
+            <div class="row">
+    
+                <div class ="col-auto">
+    
+                    {% if high_bid.bidder %}
+                        
+                        <a type="button" class="btn btn-primary" href="{% url 'close_listing' listing_data.id high_bid.bidder %}">Close Listing</a>
+    
+                    {% else %}
+
+                        <a type="button" class="btn btn-primary" href="{% url 'close_listing' listing_data.id %}">Close Listing</a>
+
+                    {% endif %}
+
+                </div>
+            </div>
+    
+        <p></p>
+    
+        {% endif %}
+
+        </div>
 
     {% endif %}
 
+    <br>
 
+    {% if bid_warning %}
+
+    <h4>Bid not accepted.</h4>
+    
+    <br>
+
+    {% endif %}
 
     <form method="post" id="bids">
         {% csrf_token %}
-        {{bids}}
-        <button type="submit" name="form_name" value="bids">Bid</button>
-
+        <div class="row">
+            <div class="col">
+                {{bids.amount}}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" name="form_name" value="bids">Bid</button>
+            </div>
+        </div>
     </form>
+
+    <p></p>
+
+
+    <!-- <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Login">
+    </form> -->
+
 
     <form method="post" id="comments">
         {% csrf_token %}
-        {{comments}}
-        <button type="submit">Comment</button>
-
+        <div class="row form-group">
+            <div class="col" >
+                {{comments.comment}}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Comment</button>
+            </div>
+        </div>
     </form>
 
+    <p></p>
 
     {% for comment in comment_data %}
     <div class="card">

@@ -2,23 +2,14 @@
 
 {% block body %}
 
-    <ul>
-    {% for i in items %}
+    {% for listing in items %}
 
-    <li>
-
-        <a href="{% url 'listing' i.id %}">{{i}}</a>
-
-    </li>
+    {% include './custom-card.html' with link=url_listing title=item.title description=item.description imageURL=item.imageURL %}
 
     {% empty %}
 
-    <li>
-        <div>No items.</div>
-    </li>
+    <div>No items.</div>
 
     {% endfor %}
-
-    </ul>
 
 {% endblock %}

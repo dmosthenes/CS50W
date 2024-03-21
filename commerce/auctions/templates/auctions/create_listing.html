@@ -7,26 +7,31 @@
     <form method="post">
         {% csrf_token %}
         <div>
-        {{form.title.label_tag}}
         {{form.title}}
+        <br>
         </div>
         <div>
-        {{form.description.label_tag}}
         {{form.description}}
+        <br>
         </div>
         <div>
-        {{form.imageURL.label_tag}}
         {{form.imageURL}}
+        <br>
         </div>
         <div>
-        {{form.duration.label_tag}}
         {{form.duration}}
+        <br>
         </div>
         <div>
-        {{form.category.label_tag}}
-        {{form.category}}
+        {{form.starting_price}}
+        <br>
         </div>
-        <button type="submit">Create Listing</button>
+        <div>
+        {{form.category}}
+        <br>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Listing</button>
     </form>
 
 {% endblock %}

@@ -3,19 +3,20 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    <ul>
+    <br>
+
     {% for listing in listings %}
 
-    <div>
+    {% include "./custom-card.html" with link=url_listing title=listing.title imageURL=listing.imageURL %}
+
+    <!-- <div>
         <a href="{% url 'listing' listing.id %}">{{listing.title}}</a>
         <br>
         <img src="{{listing.imageURL}}" width="300" height="300">
-    </div>
+    </div> -->
 
     {% empty %}
-    <li>
         No listings.
-    </li>
     {% endfor %}
-    </ul>
+
 {% endblock %}
