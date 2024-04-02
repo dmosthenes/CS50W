@@ -1,0 +1,15 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<div class="format-window">
+    <!-- Add a form for creating a post -->
+    {{ post_form }}
+    <button id="make-post" class="btn btn-primary">Post</button>
+
+    <!-- Display each post from each follow -->
+    {% include "network/post.html" %}
+
+
+    <!-- Display replies -->
+</div>
+{% endblock %}

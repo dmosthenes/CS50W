@@ -1,0 +1,79 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<div id="profile-view" class="format-window">
+
+    {% for info in profile_form %}
+
+    {% if info.value is not None %}
+
+    <h1>{{info.value}}</h1>
+
+    {% endif %}
+
+    {% endfor %}
+
+{% if is_own_profile %}
+
+    <button id="modify" class="btn btn-primary">Modify</button>
+
+{% endif %}
+
+    <!-- Add followers -->
+
+    <!-- Add follow button -->
+
+{% if not is_own_profile %}
+
+<!-- Check also that not already following -->
+
+    {% if not following %}
+
+    <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="False">Follow</button>
+
+    {% else %}
+
+    <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="True">Unfollow</button>
+
+    {% endif %}
+
+{% endif %}
+
+
+</div>
+
+<div id="modify-view" class="format-window">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in profile_form %}
+
+        {{field.label_tag}}
+        {{field}}
+        <br>
+
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+
+    
+
+</div>
+
+{% else %}
+
+<h1>Not logged in.</h1>
+
+{% endif %}
+
+<script src="{% static 'network/profile.js' %}"></script>
+
+{% endblock %}
+

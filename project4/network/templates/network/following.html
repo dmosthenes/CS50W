@@ -1,0 +1,32 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+<div class="format-window">
+
+{% if user.is_authenticated %}
+
+{% for user in followed_users %}
+
+<a href="{% url 'profile_view' user %}"><h1>{{user.first_name}} {{user.last_name}}</h1></a>
+
+{% empty %}
+
+<h1>You're not following anyone.</h1>
+
+{% endfor %}
+
+{% else %}
+
+<h1>Not logged in.</h1>
+
+{% endif %}
+
+</div>
+
+<script src="{% static 'network/following.js' %}"></script>
+
+{% endblock %}
+
