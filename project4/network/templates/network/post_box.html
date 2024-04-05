@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <div class="container mt-5" id="post-box">
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="d-flex align-items-center">
+                      <!-- <img src="{{user.picture}}" class="rounded-circle mr-2" alt="Profile Picture" style="width: 40px; height: 40px;"> -->
+                      <div>
+                        {{post_form.body}}
+                        <p class="text-muted mb-0">{{post.timestamp}}</p>
+                      </div>
+                    </div>
+                  </div>
+        
+                  <div class="card-footer">
+                    <button id="make-post" class="btn btn-primary">Post</button>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        <div class="body">
+            {% block post-body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

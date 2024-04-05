@@ -1,15 +1,45 @@
 {% extends "network/layout.html" %}
 
+{% load static %}
+
 {% block body %}
 <div class="format-window">
     <!-- Add a form for creating a post -->
-    {{ post_form }}
-    <button id="make-post" class="btn btn-primary">Post</button>
+
+    {% include "network/post_box.html" %}
+
+</div>
 
     <!-- Display each post from each follow -->
-    {% include "network/post.html" %}
-
+    {% for post in page_obj %}
+        {% include "network/post.html" %}
+    {% empty %}
+    <h1 id="empty" class="format-window">No posts yet.</h1>
+    {% endfor %}
 
     <!-- Display replies -->
-</div>
+
+    {% if page_obj %}
+    <div class="pagination format-window">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+
+
+<script src="{% static 'network/index.js' %}"></script>
+
 {% endblock %}

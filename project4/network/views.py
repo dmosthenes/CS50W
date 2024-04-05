@@ -7,9 +7,10 @@ from django.forms import ModelForm, TextInput, FileInput, Textarea
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from django.core.paginator import Paginator
 
 from .models import User, Follow, Post, Like, Reply
+from django.db.models import Q
 
 
 class UserForm(ModelForm):
@@ -36,7 +37,7 @@ class PostForm(ModelForm):
         model = Post
         fields = ["body"]
         widgets = {
-            "body": Textarea(attrs={'placeholder': 'What\'s happening?', 'class': 'form-control'})
+            "body": Textarea(attrs={'placeholder': 'What\'s happening?', 'class': 'post-box form-control', 'required': True})
         }
         labels = {
             "body": ""
@@ -53,20 +54,75 @@ class ReplyForm(ModelForm):
             "body": Textarea(attrs={'placeholder': 'Reply', 'class': 'form-control'})
         }
 
-@login_required
+
 def index(request):
 
-    # Get all posts for user and follows
+    page_obj = None
+
+    if request.user.is_authenticated:
+
+        page_obj = listing(request)
+
+        if len(page_obj) == 0:
+            page_obj = None
 
     return render(request, "network/index.html", {
-        "posts": "pass",
+
+        "page_obj": page_obj,
         "post_form": PostForm(),
         "reply_form": ReplyForm()
 
     })
 
+def listing(request):
+
+    # Get the page number
+    page = 1 if request.GET.get("page", None) is None else request.GET["page"]
+
+    # Get all followeds of user
+    user = request.user
+    followeds = Follow.objects.filter(follower=user).values_list('followed', flat=True)
+
+    # Get all posts from user and followeds and sort from newest to oldest
+    posts = Post.objects.filter(Q(poster=user) | Q(poster__in=followeds)).order_by('-timestamp')
+
+    p = Paginator(posts, 10)
+
+    return p.page(page)
+
+@login_required
+def get_user(request):
+
+    user_data = {
+        "id": request.user.id,
+        "username": request.user.username
+    }
+
+    return JsonResponse({
+        "user": user_data
+    })
+
+@login_required
+@csrf_exempt
 def post(request):
-    pass
+
+    # Create the post in the database
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        user = User.objects.get(id=data["user"])
+
+        post = Post.objects.create(poster=user, body=data["comment"])
+        new_post = render(request, "network/post.html", {
+            "post": post,
+            "user": user
+        })
+
+        # Return the database object for the post
+        return HttpResponse(new_post)
+    
+    return JsonResponse({
+        "message": "Not posted successfully"})
 
 @login_required
 @csrf_exempt
