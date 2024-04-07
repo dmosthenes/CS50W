@@ -21,8 +21,26 @@
                     <!-- <img src="#" class="img-fluid" alt="Post Image"> -->
                   </div>
                   <div class="card-footer">
-                    <button type="button" class="btn btn-primary mr-2" data-postid="{{post.id}}">Like</button>
-                    <button type="button" class="btn btn-secondary mr-2" data-postid="{{post.id}}">Reply</button>
+                    {% for postid, lks in likes.items %}
+                      {% if postid == post.id %}
+                        <button type="button" class="btn btn-primary mr-2" data-postid="{{post.id}}">
+                          {% for idpost, lkd in already_liked.items %}
+                            {% if postid == idpost  %}
+                              {% if lkd %}
+                                <span data-side="a" data-postid="{{post.id}}" class="left-label">Unlike</span>
+                              {% else %}
+                                <span data-side="a" data-postid="{{post.id}}" class="left-label">Like</span>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          <span data-side="b" data-postid="{{post.id}}" class="right-label">👌 {{lks}}</span>
+                        </button>
+                      {% endif %}
+                    {% endfor %}
+                    <!-- <button type="button" class="btn btn-secondary mr-2" data-postid="{{post.id}}">Reply</button> -->
+                    {% if user.username == post.poster.username %}
+                      <button type="button" class="btn btn-danger mr-2" data-postid="{{post.id}}">Edit</button>
+                    {% endif %}
                     <!-- <button type="button" class="btn btn-danger">Share</button> -->
                   </div>
                 </div>

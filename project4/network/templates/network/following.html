@@ -8,25 +8,57 @@
 
 {% if user.is_authenticated %}
 
-{% for user in followed_users %}
+    {% for user in followed_users %}
 
-<a href="{% url 'profile_view' user %}"><h1>{{user.first_name}} {{user.last_name}}</h1></a>
+        <a href="{% url 'profile_view' user %}"><h1>{{user.first_name}} {{user.last_name}}</h1></a>
 
-{% empty %}
+    {% empty %}
 
-<h1>You're not following anyone.</h1>
+        <h1>You're not following anyone.</h1>
 
-{% endfor %}
+    {% endfor %}
+
+    <!-- Display each post from each follow -->
+    {% for post in page_obj %}
+        {% include "network/post.html" %}
+    {% empty %}
+        {% if followed_users %}
+            <h1 id="empty" class="format-window">No posts yet.</h1>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Display replies -->
+
+    {% if page_obj %}
+        <div class="pagination format-window">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+        
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
 
 {% else %}
 
-<h1>Not logged in.</h1>
+    <h1>Not logged in.</h1>
 
 {% endif %}
 
 </div>
 
 <script src="{% static 'network/following.js' %}"></script>
+<script src="{% static 'network/index.js' %}"></script>
 
 {% endblock %}
 
