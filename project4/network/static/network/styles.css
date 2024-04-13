@@ -12,3 +12,40 @@ h1{
     resize: none;
 }
 
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        /* transform: translateY(-50%); */
+        height: 0px
+
+    }
+    50% {
+        opacity: 0;
+        height: 200px
+
+    }
+
+    100% {
+        opacity: 1;
+        /* transform: translateY(0); */
+        height: 200px
+
+    }
+
+}
+
+#animate-post{
+    animation: slideDown 2s ease forwards
+}
+
+.left-label {
+    float: left;
+}
+
+.right-label {
+    float: right;
+}
+
+.pagination {
+    text-align: center;
+}

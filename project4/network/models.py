@@ -16,6 +16,7 @@ class Post(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.CharField(max_length=280)
     timestamp = models.DateTimeField(auto_now_add=True)
+    # likes = models.Count(Like)
 
 # Replies
 class Reply(models.Model):
