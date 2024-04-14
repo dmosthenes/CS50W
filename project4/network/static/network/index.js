@@ -133,7 +133,7 @@ function edit_post(clicked_button){
     txt = old_element.innerHTML
     txt_area = document.createElement('textarea')
     txt_area.setAttribute('class', 'post-box form-control')
-    txt_area.setAttribute('rows', '1')
+    txt_area.style.height = '100px'
     txt_area.value = txt
     
     old_element.parentNode.replaceChild(txt_area, old_element)

@@ -17,6 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
             modify_profile()
 
     })
+
+    // Add listener to cancel button
+    cancel_button = document.getElementById("cancel")
+
+    if (cancel_button){
+        cancel_button.addEventListener("click", () => {
+            modify_profile()
+        })
+    }
 }
 
     // Update follow button
@@ -36,8 +45,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function modify_profile() {
     // switch to html form
-    profile_view.style.display = "none"
-    modify_view.style.display = "block"
+    if (profile_view.style.display === "none"){
+
+        profile_view.style.display = "block"
+        modify_view.style.display = "none"
+
+
+    } else {
+
+        profile_view.style.display = "none"
+        modify_view.style.display = "block"
+
+    }
+
 
 }
 

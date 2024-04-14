@@ -1,7 +1,7 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.forms import ModelForm, TextInput, FileInput, Textarea
 from django.contrib.auth.decorators import login_required
@@ -16,7 +16,7 @@ from django.db.models import Q
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "picture", "bio", "location", "work"]
+        fields = ["first_name", "last_name", "bio", "location", "work", "picture"]
         widgets = {
             "first_name": TextInput(attrs={'placeholder': 'First Name', 'class': 'form-control'}),
             "last_name": TextInput(attrs={'placeholder': 'Last Name', 'class': 'form-control'}),
@@ -24,13 +24,25 @@ class UserForm(ModelForm):
             "bio": Textarea(attrs={'placeholder': 'Bio', 'class': 'form-control'}),
             "location": TextInput(attrs={'placeholder': 'Home', 'class': 'form-control'}),
             "work": TextInput(attrs={'placeholder': 'Job', 'class': 'form-control'})}
+        labels = {
+            'first_name': False,
+            'last_name': False,
+            'picture': False,
+            'bio': False,
+            'location': False,
+            'work': False
+        }
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['picture'].widget.attrs.update({
-            'placeholder': 'Display Picture',
-            'class': 'form-control'
+            'class': 'form-control-file btn-primary-btn',
+            'id': 'customFile',
+            'aria-describedby': 'customFileLabel'
+
         })
+
 
 class PostForm(ModelForm):
     class Meta:
@@ -201,7 +213,8 @@ def following_view(request):
 def profile_view(request, user):
 
     # Get user profile
-    profile = User.objects.get(username=user)
+    # profile = User.objects.get(username=user)
+    profile = get_object_or_404(get_user_model(), username=user)
 
     # Get user's posts paginator object
     page_obj = listing(request, None, profile)
@@ -213,17 +226,39 @@ def profile_view(request, user):
     if request.method == "POST":
 
         # Update user model
-        profile_form = UserForm(request.POST, instance=profile)
-        if profile_form.is_valid():
+        # profile_form = UserForm(request.POST, request.FILES, instance=profile)
 
-            profile_form.save()
+        # print(profile_form.fields["picture"].url)
+
+        # if profile_form.is_valid():
+
+        #     profile_form.save()
+
+        # Update the fields in the user's profile
+        profile.last_name = request.POST.get('last_name')
+        profile.first_name = request.POST.get('first_name')
+        profile.work = request.POST.get('work')
+        profile.location = request.POST.get('location')
+        profile.bio = request.POST.get('bio')
+
+        # Update image if available
+        if len(request.FILES) != 0:
+            profile.picture = request.FILES['picture']
+
+        profile.save()
+     
+    profile_form = UserForm(instance=profile)
+
+    print(profile.picture)
     
-    else:
-
-        profile_form = UserForm(instance=profile)
-
     return render(request, "network/profile.html", {
         "profile_form": profile_form,
+        "first_name": profile.first_name,
+        "last_name": profile.last_name,
+        "work": profile.work,
+        "location": profile.location,
+        "bio": profile.bio,
+        "picture": profile.picture,
         "is_own_profile": str(request.user) == user,
         "following": followed,
         "profile_user": user,
