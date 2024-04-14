@@ -20,23 +20,47 @@
     <!-- Display replies -->
 
     {% if page_obj %}
-    <div class="pagination format-window">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-            {% endif %}
-    
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        <div class="pagination d-flex justify-content-center">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                <br>
+
+                <button class="btn btn-primary">
+                    <a style="color:inherit; text-decoration:none;" href="?page=1">&laquo; first</a>
+                </button>
+                <button class="btn btn-primary">
+                    <a style="color:inherit; text-decoration:none;" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                </button>
+                {% endif %}
+        
+                {% if page_obj.has_next %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                <br>
+
+                <button class="btn btn-primary">
+                    <a style="color:inherit; text-decoration:none;" href="?page={{ page_obj.next_page_number }}">next</a>
+                </button>
+                <button class="btn btn-primary">
+                    <a style="color:inherit; text-decoration:none;" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                </button>
+                {% endif %}
+
+                {% if not page_obj.has_next and not page_obj.has_previous %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% endif %}
             </span>
-    
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
+        </div>
     {% endif %}
 
 
