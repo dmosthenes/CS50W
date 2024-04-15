@@ -18,50 +18,26 @@
             <button type="submit" class="btn btn-primary">Update Profile</button>
             <button type="button" id="cancel" class="btn btn-danger">Cancel</button>
         </form>
-
     </div>
 
-    <div id="profile-view" class="format-window">
+    <div id="profile-view" class="format-window" style="display: flex; flex-direction: column;">
 
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-              <div class="col-md-6">
-                <div class="card">
-                  <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <img src="{{ picture.url }}" class="rounded-circle mr-2" alt="Profile Picture" style="width: 400px; height: 400px; margin: 0 auto;">
-                    </div>
-                    <div>
-                        <h5 class="mb-0">{{ first_name }} {{ last_name }}</h5>
-                    </div>
-                  </div>
-                  <div class="card-body d-flex justify-content-between">
-                    <div>
-                        <div style="display:flex;">
-                            <div>ℹ️</div>
-                            <div>{{ bio }}</div>
-                        </div>
-                        📍 {{ location }}
-                        <br>
-                        👷‍♀️ {{ work }}
-                    </div>
-                    <div>
-                        <br>
-                        {% if not is_own_profile %}
-                            {% if not following %}
-                                <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="False">Follow</button>
-                            {% else %}
-                                <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="True">Unfollow</button>
-                            {% endif %}
-                        {% endif %}
-                        {% if is_own_profile %}
-                            <button id="modify" class="btn btn-primary">Modify</button>
-                        {% endif %}
-                    </div>
-                    </div>
-                </div>
-            </div> 
-        </div>
+
+            {% include "network/profile_card.html" %}
+            </div>
+
+            <div style="display: flex; justify-content:center; margin-top: 10px;">
+                {% if not is_own_profile %}
+                {% if not following %}
+                    <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="False">Follow</button>
+                {% else %}
+                    <button id="follow" class="btn btn-primary" data-user1="{{request.user}}" data-user2="{{profile_user}}" value="True">Unfollow</button>
+                {% endif %}
+                {% endif %}
+                {% if is_own_profile %}
+                    <button id="modify" class="btn btn-primary">Modify</button>
+                {% endif %}
+            </div>
 
     <!-- Display each post from each follow -->
     {% for post in page_obj %}

@@ -253,12 +253,7 @@ def profile_view(request, user):
     
     return render(request, "network/profile.html", {
         "profile_form": profile_form,
-        "first_name": profile.first_name,
-        "last_name": profile.last_name,
-        "work": profile.work,
-        "location": profile.location,
-        "bio": profile.bio,
-        "picture": profile.picture,
+        "profile": profile,
         "is_own_profile": str(request.user) == user,
         "following": followed,
         "profile_user": user,

@@ -8,9 +8,9 @@
 
 {% if user.is_authenticated %}
 
-    {% for user in followed_users %}
+    {% for profile in followed_users %}
 
-        <a href="{% url 'profile_view' user %}"><h1>{{user.first_name}} {{user.last_name}}</h1></a>
+        {% include "network/profile_card.html" %}
 
     {% empty %}
 
@@ -28,6 +28,8 @@
     {% endfor %}
 
     <!-- Display replies -->
+
+    <br>
 
     {% if page_obj %}
         <div class="pagination d-flex justify-content-center">

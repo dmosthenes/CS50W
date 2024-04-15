@@ -9,8 +9,10 @@ def filepath(request, filename):
     filename = f"{str(timeNow) + old_filename}"
     return os.path.join('media/', filename)
 
+path_to_default = "media/default.png"
+
 class User(AbstractUser):
-    picture = models.ImageField(upload_to=filepath, null=True, blank=True)
+    picture = models.ImageField(upload_to=filepath, null=True, blank=True, default=path_to_default)
     bio = models.CharField(max_length=280, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)
     work = models.CharField(max_length=100, null=True, blank=True)
