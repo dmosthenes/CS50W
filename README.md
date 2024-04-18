@@ -8,7 +8,7 @@ A mail application in Django with asynchronous JavaScript for loading emails fro
 
 ![Mail](https://github.com/dmosthenes/HTML-CSS-Javascript-Django-examples/blob/main/mail.gif?raw=true)
 
-An online auction site with the ability to create listings, bid on listings, add make comments. Listings can be grouped by category.
+An online auction site with the ability to create listings, bid on listings, manage your watchlist, add make comments. Listings can be grouped by category.
 
 ![Commerce]()
 
