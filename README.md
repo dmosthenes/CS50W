@@ -6,9 +6,13 @@ A social networking site using Django, JavaScript, with CSS styling. The site al
 
 A mail application in Django with asynchronous JavaScript for loading emails from the site API.
 
-![Mail] (https://github.com/dmosthenes/HTML-CSS-Javascript-Django-examples/blob/main/mail.gif?raw=true)
+![Mail](https://github.com/dmosthenes/HTML-CSS-Javascript-Django-examples/blob/main/mail.gif?raw=true)
+
+An online auction site with the ability to create listings, bid on listings, add make comments. Listings can be grouped by category.
+
+![Commerce]()
 
 A wiki site in Django with the ability to create and edit pages in markdown, search entries, and browse random entries.
 
-![Wiki] ()
+![Wiki](https://github.com/dmosthenes/HTML-CSS-Javascript-Django-examples/blob/main/wiki.gif?raw=true)
 
