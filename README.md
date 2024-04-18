@@ -10,7 +10,7 @@ A mail application in Django with asynchronous JavaScript for loading emails fro
 
 An online auction site with the ability to create listings, bid on listings, manage your watchlist, add make comments. Listings can be grouped by category.
 
-![Commerce]()
+![Commerce](https://github.com/dmosthenes/HTML-CSS-Javascript-Django-examples/blob/main/commerce.gif?raw=true)
 
 A wiki site in Django with the ability to create and edit pages in markdown, search entries, and browse random entries.
 
