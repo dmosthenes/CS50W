@@ -12,34 +12,34 @@ textarea {
 @keyframes banner-animation {
     
     0% {
-        height: 100px;
+        height: 100%;
         opacity: 1;
-        
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px
+
     }
-    50% {
-        height: 100px;
-        opacity: 1;
-    }
+
     75% {
-        height: 100px;
+        height: 100%;
         opacity: 0;
-        margin-bottom: 20px;
+        line-height: 100%;
+        padding: 20px;
+        margin-bottom: 10px
+
     }
+
     100% {
-        height: 0px;
+        height: 0%;
         opacity: 0;
-        margin-bottom: 0px;
+        line-height: 0%;
+        padding: 0px;
+        margin-bottom: 0px
     }
 }
 
-.sent-banner {
-    animation: banner-animation 6s ease;
-    border-radius: 10px;
-    border: 2px solid slateblue;
-    display: flex;
-    justify-content: center;
-    font-size: 60px;
-    color: white;
-    background-color: slateblue;
-    margin-bottom: 20px;
+.alert.alert-primary {
+    animation: banner-animation 5s ease;
+    border-radius: 5px;
 }
+  

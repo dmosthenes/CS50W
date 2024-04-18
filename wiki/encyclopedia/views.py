@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from . import util
 
@@ -8,17 +8,50 @@ from django import forms
 
 from random import choice
 
-# class NewSearchForm(forms.Form):
-#     search = forms.CharField(label="Search")
+mkdwn = Markdown()
+
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
 
-def title(request, name):
+def edit(request, page):
 
-    mkdwn = Markdown()
+    content = util.get_entry(page)
+
+    if request.method == "POST":
+        
+        new_text = request.POST.get("body")
+        page = request.POST.get("title")
+
+        util.save_entry(page, new_text)
+
+        return redirect(title, page)
+
+    else:
+        return render(request, "encyclopedia/edit_page.html", {
+            "title": page,
+            "content": content
+        })
+    
+
+def create(request):
+
+    if request.method == "POST":
+
+        page = request.POST.get("title")
+        content = request.POST.get("content")
+
+        util.save_entry(page, content)
+
+        return redirect(title, page)
+
+    return render(request, "encyclopedia/new_page.html", {
+
+    })
+
+def title(request, name):
 
     if content:= util.get_entry(name):
 

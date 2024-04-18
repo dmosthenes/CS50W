@@ -8,7 +8,9 @@
     <h1>Create New Page</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        <input placeholder="Title" style="margin-bottom:10px" name="title">
+        <textarea placeholder="Body" style="height:700px" name="content"></textarea>
+        
         <button type="submit">Create Page</button>
     </form>
 {% endblock %}

@@ -62,13 +62,14 @@ function load_mailbox(mailbox, sent=false) {
   if (sent) {
 
     anim_box = document.createElement('div')
-    anim_box.className = "sent-banner"
+    anim_box.className = "alert alert-primary"
     anim_box.innerHTML = "Email sent."
 
   
     document.querySelector('#emails-view').append(anim_box)
 
     anim_box.addEventListener('animationend', () => {
+
       anim_box.remove()
     }
     )
@@ -98,9 +99,10 @@ function add_email(email) {
   message.className = 'emailDiv'
   message.style.backgroundColor = (email.read) ? 'lightgrey' : 'white'
   message.style.padding = '10px'
-  message.style.border = '2px solid gray'
-  message.style.borderRadius = '10px'
+  message.style.border = '1px solid lightgray'
+  message.style.borderRadius = '5px'
   message.style.cursor = 'pointer'
+  message.style.margin = "5px"
   message.addEventListener('click', function() {
 
     display_email(email)
@@ -145,7 +147,6 @@ function add_email(email) {
 
       // Add element to the DOM
       document.querySelector('#emails-view').append(message)
-      document.querySelector('#emails-view').append(document.createElement('br'))
 
   }
 

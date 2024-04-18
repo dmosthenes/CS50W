@@ -1,0 +1,16 @@
+{%extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}}
+{% endblock %}
+
+{% block body %}
+    <h1>Edit Page</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input placeholder="Title" style="margin-bottom:10px;" value="{{title}}" readonly="True" name="title">
+        <textarea placeholder="Body" style="height:700px" name="body">{{content}}</textarea>
+        
+        <button type="submit">Edit Page</button>
+    </form>
+{% endblock %}
