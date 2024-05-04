@@ -1,0 +1,3 @@
+[submodule "wordle_react"]
+	path = wordle_react
+	url = https://github.com/dmosthenes/wordle-react
